@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_author_app/model/book.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -20,9 +21,18 @@ class LocalDatabase {
     if (_dataBase == null) {
       String dbPath = await getDatabasesPath();
       String path = join(dbPath, fileName);
-      _dataBase = await openDatabase(path, version: 1, onCreate: _createDB);
+      _dataBase = await openDatabase(path, version: 1, onCreate: _createTable);
     }
     return _dataBase;
   }
 
+  FutureOr<void> _createTable(Database db, int version) async {
+    await db.execute('''
+CREATE TABLE $bookTableName (
+	$idField	INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
+	$nameField	TEXT NOT NULL,
+	$dueDateField	INTEGER
+);     
+''');
+  }
 }
