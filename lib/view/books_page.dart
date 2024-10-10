@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_author_app/model/book.dart';
 
 class BooksPage extends StatelessWidget {
   @override
@@ -26,17 +27,27 @@ class BooksPage extends StatelessWidget {
     );
   }
 
-  void _addBook(BuildContext context) {
-    _openWindow(context);
+  void _addBook(BuildContext context) async {
+    String? bookName = await _openWindow(context);
+
+    if (bookName != null) {
+      Book newBook = Book(bookName, DateTime.now());
+    }
   }
 
-  void _openWindow(BuildContext context) {
-    showDialog(
+  Future<String?> _openWindow(BuildContext context) {
+    return showDialog<String>(
       context: context,
       builder: (context) {
+        String? result;
+
         return AlertDialog(
           title: const Text("Enter Book Name"),
-          content: TextField(),
+          content: TextField(
+            onChanged: (newValue) {
+              result = newValue;
+            },
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -45,8 +56,10 @@ class BooksPage extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: () {},
               child: const Text("Done"),
+              onPressed: () {
+                Navigator.pop(context, result);
+              },
             )
           ],
         );
