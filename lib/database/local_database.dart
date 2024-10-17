@@ -62,11 +62,20 @@ CREATE TABLE $bookTableName (
   Future<int> updateBook(Book book) async {
     Database? db = await _initializeDB();
     if (db != null) {
-      return await db.update(
+      return await db.update(bookTableName, book.toMap(),
+          where: "$idField = ?", whereArgs: [book.id]);
+    } else {
+      return 0;
+    }
+  }
+
+  Future<int> deleteBook(Book book) async {
+    Database? db = await _initializeDB();
+    if (db != null) {
+      return await db.delete(
         bookTableName,
-        book.toMap(),
         where: "$idField = ?",
-        whereArgs: [book.id]
+        whereArgs: [book.id],
       );
     } else {
       return 0;

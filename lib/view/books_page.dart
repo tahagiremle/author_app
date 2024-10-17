@@ -45,11 +45,22 @@ class _BooksPageState extends State<BooksPage> {
         ),
       ),
       title: Text(_books[index].name),
-      trailing: IconButton(
-        icon: Icon(Icons.edit),
-        onPressed: () {
-          _updateBook(context, index);
-        },
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              _updateBook(context, index);
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              _deleteBook(index);
+            },
+          )
+        ],
       ),
     );
   }
@@ -85,6 +96,14 @@ class _BooksPageState extends State<BooksPage> {
       if (updatedLine > 0) {
         setState(() {});
       }
+    }
+  }
+
+  void _deleteBook(int index) async {
+    Book book = _books[index];
+    int deletedLine = await _localDatabase.deleteBook(book);
+    if (deletedLine > 0) {
+      setState(() {});
     }
   }
 
