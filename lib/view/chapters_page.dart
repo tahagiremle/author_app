@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_author_app/database/local_database.dart';
 import 'package:flutter_author_app/model/book.dart';
-import 'package:flutter_author_app/view/chapters_page.dart';
+import 'package:flutter_author_app/model/chapter.dart';
 
-class BooksPage extends StatefulWidget {
+class ChaptersPage extends StatefulWidget {
+  final Book _book;
+
+  const ChaptersPage(this._book, {super.key});
+
   @override
-  State<BooksPage> createState() => _BooksPageState();
+  State<ChaptersPage> createState() => _ChaptersPageState();
 }
 
-class _BooksPageState extends State<BooksPage> {
+class _ChaptersPageState extends State<ChaptersPage> {
   LocalDatabase _localDatabase = LocalDatabase();
 
-  List<Book> _books = [];
+  List<Chapter> _chapters = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orangeAccent[700],
-        title: const Text(
-          "Books Page",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text(widget._book.name),
       ),
-      floatingActionButton: _buildAddBookFab(context),
+      floatingActionButton: _buildAddChapterFab(context),
       body: FutureBuilder(
-        future: _getAllBooks(),
+        future: _getAllChapters(),
         builder: _buildListView,
       ),
     );
@@ -33,7 +34,7 @@ class _BooksPageState extends State<BooksPage> {
 
   Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapshot) {
     return ListView.builder(
-      itemCount: _books.length,
+      itemCount: _chapters.length,
       itemBuilder: _buildListItem,
     );
   }
@@ -42,75 +43,81 @@ class _BooksPageState extends State<BooksPage> {
     return ListTile(
       leading: CircleAvatar(
         child: Text(
-          _books[index].id.toString(),
+          _chapters[index].id.toString(),
         ),
       ),
-      title: Text(_books[index].name),
+      title: Text(_chapters[index].title),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              _updateBook(context, index);
+              _updateChapter(context, index);
             },
           ),
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () {
-              _deleteBook(index);
+              _deleteChapter(index);
             },
           )
         ],
       ),
-      onTap: () => _openChaptersPage(context, index),
+      onTap: () => _openChaptersDetailPage(context, index),
     );
   }
 
-  Widget _buildAddBookFab(BuildContext context) {
+  Widget _buildAddChapterFab(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: Colors.orangeAccent[700],
       child: const Icon(
         Icons.add,
         color: Colors.white,
       ),
-      onPressed: () => _addBook(context),
+      onPressed: () => _addChapter(context),
     );
   }
 
-  void _addBook(BuildContext context) async {
-    String? bookName = await _openWindow(context);
+  void _addChapter(BuildContext context) async {
+    String? chapterTitle = await _openWindow(context);
+    int? bookId = widget._book.id;
 
-    if (bookName != null) {
-      Book newBook = Book(bookName, DateTime.now());
-      int bookId = await _localDatabase.createBook(newBook);
-      print("Book Id : $bookId");
+    if (chapterTitle != null && bookId != null) {
+      Chapter newChapter = Chapter(bookId, chapterTitle);
+      int chapterId = await _localDatabase.createChapter(newChapter);
+      print("Chapter Id : $chapterId");
       setState(() {});
     }
   }
 
-  void _updateBook(BuildContext context, int index) async {
-    String? newBookName = await _openWindow(context);
-    if (newBookName != null) {
-      Book book = _books[index];
-      book.name = newBookName;
-      int updatedLine = await _localDatabase.updateBook(book);
+  void _updateChapter(BuildContext context, int index) async {
+    String? newChapterTitle = await _openWindow(context);
+
+    if (newChapterTitle != null) {
+      Chapter chapter = _chapters[index];
+      chapter.title = newChapterTitle;
+      int updatedLine = await _localDatabase.updateChapter(chapter);
       if (updatedLine > 0) {
         setState(() {});
       }
     }
   }
 
-  void _deleteBook(int index) async {
-    Book book = _books[index];
-    int deletedLine = await _localDatabase.deleteBook(book);
+  void _deleteChapter(int index) async {
+    Chapter chapter = _chapters[index];
+    int deletedLine = await _localDatabase.deleteChapter(chapter);
     if (deletedLine > 0) {
       setState(() {});
     }
   }
 
-  Future<void> _getAllBooks() async {
-    _books = await _localDatabase.readAllBooks();
+  Future<void> _getAllChapters() async {
+    int? bookId = widget._book.id;
+
+    if (bookId != null) {
+      _chapters = await _localDatabase.readAllChapters(bookId);
+    }
   }
 
   Future<String?> _openWindow(BuildContext context) {
@@ -120,7 +127,7 @@ class _BooksPageState extends State<BooksPage> {
         String? result;
 
         return AlertDialog(
-          title: const Text("Enter Book Name"),
+          title: const Text("Enter Chapter Name"),
           content: TextField(
             onChanged: (newValue) {
               result = newValue;
@@ -145,12 +152,12 @@ class _BooksPageState extends State<BooksPage> {
     );
   }
 
-  void _openChaptersPage(BuildContext content, int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ChaptersPage(_books[index]),
-      ),
-    );
+  void _openChaptersDetailPage(BuildContext content, int index) {
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => ChaptersPage(_chapters[index]),
+    //   ),
+    // );
   }
 }

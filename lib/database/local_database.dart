@@ -41,8 +41,8 @@ CREATE TABLE $chaptersTableName (
 	$chaptersBookId	INTEGER NOT NULL,
 	$chaptersTitle	TEXT NOT NULL,
 	$chaptersContent	TEXT,
-	$chaptersDueDate	TEXT DEFUALT CURRENT TIMESTAMP,
-  FOREIGN KEY ("$chaptersBookId") REFERENCES "$bookTableName"("$idField") ON UPDATE ON DELETE CASCADE
+	$chaptersDueDate	DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY ("$chaptersBookId") REFERENCES "$bookTableName"("$idField") ON UPDATE CASCADE ON DELETE CASCADE
 );     
 ''');
   }
