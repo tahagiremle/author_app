@@ -10,11 +10,18 @@ class Book {
 
   Book(this.name, this.dueDate);
 
+  Book.fromMap(Map<String, dynamic> map)
+      : id = map["id"],
+        name = map["name"],
+        dueDate = DateTime.fromMillisecondsSinceEpoch(
+          map["dueDate"],
+        );
+
   Map<String, dynamic> toMap() {
     return {
       "id": id,
       "name": name,
-      "dueDate": dueDate,
+      "dueDate": dueDate.millisecondsSinceEpoch,
     };
   }
 }

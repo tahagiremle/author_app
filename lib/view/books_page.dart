@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_author_app/database/local_database.dart';
 import 'package:flutter_author_app/model/book.dart';
 
-class BooksPage extends StatelessWidget {
+class BooksPage extends StatefulWidget {
+  @override
+  State<BooksPage> createState() => _BooksPageState();
+}
+
+class _BooksPageState extends State<BooksPage> {
+  LocalDatabase _localDatabase = LocalDatabase();
+
+  List<Book> _books = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,6 +23,28 @@ class BooksPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: _buildAddBookFab(context),
+      body: FutureBuilder(
+        future: _getAllBooks(),
+        builder: _buildListView,
+      ),
+    );
+  }
+
+  Widget _buildListView(BuildContext context, AsyncSnapshot<void> snapshot) {
+    return ListView.builder(
+      itemCount: _books.length,
+      itemBuilder: _buildListItem,
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, int index) {
+    return ListTile(
+      leading: CircleAvatar(
+        child: Text(
+          _books[index].id.toString(),
+        ),
+      ),
+      title: Text(_books[index].name),
     );
   }
 
@@ -32,7 +64,14 @@ class BooksPage extends StatelessWidget {
 
     if (bookName != null) {
       Book newBook = Book(bookName, DateTime.now());
+      int bookId = await _localDatabase.createBook(newBook);
+      print("Book Id : $bookId");
+      setState(() {});
     }
+  }
+
+  Future<void> _getAllBooks() async {
+    _books = await _localDatabase.readAllBooks();
   }
 
   Future<String?> _openWindow(BuildContext context) {

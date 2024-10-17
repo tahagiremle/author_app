@@ -44,4 +44,18 @@ CREATE TABLE $bookTableName (
       return -1;
     }
   }
+
+  Future<List<Book>> readAllBooks() async {
+    Database? db = await _initializeDB();
+    List<Book> books = [];
+
+    if (db != null) {
+      List<Map<String, dynamic>> booksMap = await db.query(bookTableName);
+      for (Map<String, dynamic> m in booksMap) {
+        Book b = Book.fromMap(m);
+        books.add(b);
+      }
+    }
+    return books;
+  }
 }
