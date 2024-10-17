@@ -35,4 +35,13 @@ CREATE TABLE $bookTableName (
 );     
 ''');
   }
+
+  Future<int> createBook(Book book) async {
+    Database? db = await _initializeDB();
+    if (db != null) {
+      return await db.insert(bookTableName, book.toMap());
+    } else {
+      return -1;
+    }
+  }
 }

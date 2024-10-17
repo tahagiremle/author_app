@@ -7,7 +7,7 @@ class BooksPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orangeAccent[700],
-        title: Text(
+        title: const Text(
           "Books Page",
           style: TextStyle(color: Colors.white),
         ),
