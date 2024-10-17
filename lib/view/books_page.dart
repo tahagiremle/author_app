@@ -45,6 +45,12 @@ class _BooksPageState extends State<BooksPage> {
         ),
       ),
       title: Text(_books[index].name),
+      trailing: IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () {
+          _updateBook(context, index);
+        },
+      ),
     );
   }
 
@@ -67,6 +73,18 @@ class _BooksPageState extends State<BooksPage> {
       int bookId = await _localDatabase.createBook(newBook);
       print("Book Id : $bookId");
       setState(() {});
+    }
+  }
+
+  void _updateBook(BuildContext context, int index) async {
+    String? newBookName = await _openWindow(context);
+    if (newBookName != null) {
+      Book book = _books[index];
+      book.name = newBookName;
+      int updatedLine = await _localDatabase.updateBook(book);
+      if (updatedLine > 0) {
+        setState(() {});
+      }
     }
   }
 

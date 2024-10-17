@@ -58,4 +58,18 @@ CREATE TABLE $bookTableName (
     }
     return books;
   }
+
+  Future<int> updateBook(Book book) async {
+    Database? db = await _initializeDB();
+    if (db != null) {
+      return await db.update(
+        bookTableName,
+        book.toMap(),
+        where: "$idField = ?",
+        whereArgs: [book.id]
+      );
+    } else {
+      return 0;
+    }
+  }
 }
