@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_author_app/database/local_database.dart';
 import 'package:flutter_author_app/model/book.dart';
 import 'package:flutter_author_app/model/chapter.dart';
+import 'package:flutter_author_app/view/chapter_detail_page.dart';
 
 class ChaptersPage extends StatefulWidget {
   final Book _book;
@@ -153,11 +154,13 @@ class _ChaptersPageState extends State<ChaptersPage> {
   }
 
   void _openChaptersDetailPage(BuildContext content, int index) {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => ChaptersPage(_chapters[index]),
-    //   ),
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChapterDetailPage(
+          _chapters[index],
+        ),
+      ),
+    );
   }
 }
