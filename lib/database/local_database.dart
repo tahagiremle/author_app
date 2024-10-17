@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_author_app/model/book.dart';
+import 'package:flutter_author_app/model/chapter.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -86,6 +87,56 @@ CREATE TABLE $chaptersTableName (
         bookTableName,
         where: "$idField = ?",
         whereArgs: [book.id],
+      );
+    } else {
+      return 0;
+    }
+  }
+
+  Future<int> createChapter(Chapter chapter) async {
+    Database? db = await _initializeDB();
+    if (db != null) {
+      return await db.insert(chaptersTableName, chapter.toMap());
+    } else {
+      return -1;
+    }
+  }
+
+  Future<List<Chapter>> readAllChapters(int bookId) async {
+    Database? db = await _initializeDB();
+    List<Chapter> chapters = [];
+
+    if (db != null) {
+      List<Map<String, dynamic>> chapertsMap = await db.query(
+        chaptersTableName,
+        where: "$chaptersBookId = ?",
+        whereArgs: [bookId],
+      );
+      for (Map<String, dynamic> m in chapertsMap) {
+        Chapter c = Chapter.fromMap(m);
+        chapters.add(c);
+      }
+    }
+    return chapters;
+  }
+
+  Future<int> updateChapter(Chapter chapter) async {
+    Database? db = await _initializeDB();
+    if (db != null) {
+      return await db.update(chaptersTableName, chapter.toMap(),
+          where: "$chaptersId = ?", whereArgs: [chapter.id]);
+    } else {
+      return 0;
+    }
+  }
+
+  Future<int> deleteChapter(Chapter chapter) async {
+    Database? db = await _initializeDB();
+    if (db != null) {
+      return await db.delete(
+        chaptersTableName,
+        where: "$chaptersId = ?",
+        whereArgs: [chapter.id],
       );
     } else {
       return 0;
