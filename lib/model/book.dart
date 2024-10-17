@@ -3,6 +3,13 @@ String idField = "id";
 String nameField = "name";
 String dueDateField = "dueDate";
 
+String chaptersTableName = "chapters";
+String chaptersId = "id";
+String chaptersBookId = "bookId";
+String chaptersTitle = "title";
+String chaptersContent = "content";
+String chaptersDueDate = "dueDate";
+
 class Book {
   int? id;
   String name;

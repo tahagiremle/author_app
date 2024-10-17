@@ -34,6 +34,16 @@ CREATE TABLE $bookTableName (
 	$dueDateField	INTEGER
 );     
 ''');
+    await db.execute('''
+CREATE TABLE $chaptersTableName (
+	$chaptersId	INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
+	$chaptersBookId	INTEGER NOT NULL,
+	$chaptersTitle	TEXT NOT NULL,
+	$chaptersContent	TEXT,
+	$chaptersDueDate	TEXT DEFUALT CURRENT TIMESTAMP,
+  FOREIGN KEY ("$chaptersBookId") REFERENCES "$bookTableName"("$idField") ON UPDATE ON DELETE CASCADE
+);     
+''');
   }
 
   Future<int> createBook(Book book) async {
