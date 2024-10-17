@@ -1,12 +1,12 @@
-class Section {
+class Chapter {
   int? id;
   int bookId;
   String title;
   String content;
 
-  Section(this.bookId, this.title) : content = "";
+  Chapter(this.bookId, this.title) : content = "";
 
-  Section.fromMap(Map<String, dynamic> map)
+  Chapter.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         bookId = map["bookId"],
         title = map["title"],
