@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_author_app/database/local_database.dart';
 import 'package:flutter_author_app/model/chapter.dart';
